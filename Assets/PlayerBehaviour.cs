@@ -10,14 +10,21 @@ public class PlayerBehaviour : MonoBehaviour
     private SpriteRenderer sr;
     private bool isGrounded;
     private bool isFlipped;
-    private bool tempBool;
 
     public Vector2 movement;
+    Animator playerAnimator;
+    [SerializeField] private AnimationClip playerIdleClip;
+
+
+    public static PlayerBehaviour Instance;
+
 
     private void Awake()
     {
+        Instance = this;
         isFlipped = false;
         rb = GetComponent<Rigidbody2D>();
+        playerAnimator = GetComponentInChildren<Animator>();  
     }
 
     // Start is called before the first frame update
@@ -32,10 +39,13 @@ public class PlayerBehaviour : MonoBehaviour
         PlayerMovement();
 
         FlipPlayerSprite();
+        PlayerAnimations();
 
         if (Input.GetKey(KeyCode.Space) && isGrounded == true)
         {
+
             PlayerJump();
+            isGrounded = false;
         }
     }
 
@@ -48,9 +58,20 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     private void PlayerJump()
+    {  
+        rb.AddForce(Vector2.up * jumpMultiplier, ForceMode2D.Impulse);
+    }
+
+
+    public void PlayerAnimations()
     {
-        rb.AddForce(Vector2.up * jumpMultiplier * Time.deltaTime, ForceMode2D.Impulse);
-        //isGrounded = false;
+        if(movement.x != 0)
+        {
+            playerAnimator.SetBool("isMoving", true);
+        } else
+        {
+            playerAnimator.SetBool("isMoving", false);
+        }
     }
 
     private void FlipPlayerSprite()
@@ -69,10 +90,13 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Platform"))
         {
             Debug.Log("touching ground");
             isGrounded = true;
+
         }
+
+        
     }
 }
