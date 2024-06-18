@@ -8,6 +8,15 @@ TagManager:
   - Platform
   - Obstacle
   - Enemy
+  - gunNozzle
+  - powerUp
+  - handGun
+  - nozzle
+  - machineGun
+  - handGunPU
+  - machineGunPU
+  - speedPU
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -17,8 +26,8 @@ TagManager:
   - UI
   - Player
   - Enemy
-  - 
-  - 
+  - Clouds
+  - Effects
   - 
   - 
   - 
@@ -42,6 +51,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Effects
+    uniqueID: 3004087859
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

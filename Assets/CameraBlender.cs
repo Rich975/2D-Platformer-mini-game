@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 using Cinemachine;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class CameraBlender : MonoBehaviour
 {
@@ -15,8 +13,12 @@ public class CameraBlender : MonoBehaviour
 
     private CinemachineBrain cinemachineBrain;
 
-    void Start()
+
+
+
+    private void Start()
     {
+     
         cinemachineBrain = Camera.main.GetComponent<CinemachineBrain>();
 
         if (cinemachineBrain == null)
@@ -25,14 +27,13 @@ public class CameraBlender : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
         float speed = PlayerBehaviour.Instance.movement.x;
         Rigidbody2D playerRb = PlayerBehaviour.Instance.GetComponent<Rigidbody2D>();
 
         if (Mathf.Abs(speed) > speedThreshold || playerRb.velocity.y > speedThreshold)
         {
-
             // Blend to zoomed out camera
             zoomedOutCam.Priority = 10;
             zoomedInCam.Priority = 5;
@@ -45,4 +46,3 @@ public class CameraBlender : MonoBehaviour
         }
     }
 }
-

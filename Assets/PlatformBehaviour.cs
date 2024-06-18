@@ -1,14 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class PlatformBehaviour : MonoBehaviour
 {
     public float speed = 2.0f; // Speed of the platform
     public float waitTime = 1.0f; // Time to wait at each end
-
+    public float timeToStartOffset;
 
     public Transform platformStart;
     public Transform platformEnd;
@@ -17,18 +13,24 @@ public class PlatformBehaviour : MonoBehaviour
     private float timer; // Timer to manage wait time at endpoints
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         timer = waitTime;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        PlatformMovement();
-
+        if (timeToStartOffset <= 0)
+        {
+            PlatformMovement();
+        }
+        else
+        {
+            timeToStartOffset -= Time.deltaTime;
+            return;
+        }
     }
-
 
     private void PlatformMovement()
     {

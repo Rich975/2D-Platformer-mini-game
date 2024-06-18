@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
@@ -9,10 +7,19 @@ public class EnemyBehaviour : MonoBehaviour
     private Vector2 direction;
     [SerializeField] private SpriteRenderer sr;
 
+    [SerializeField] private int hitCount;
+
+    [SerializeField] private Animator anim;
+
+    [SerializeField] private int timesHit = 3;
+    [SerializeField] private ParticleSystem bloodExplosion_PS;
+
+
 
     // Start is called before the first frame update
     private void Start()
     {
+        anim = GetComponent<Animator>();
         sr = GetComponentInChildren<SpriteRenderer>();
         direction = new Vector2(1, 0);
         sr.flipX = false;
@@ -31,23 +38,54 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Obstacle"))
+
+        if (!collision.gameObject.CompareTag("Ground"))
         {
-            Debug.Log("colliding with obstacle");
-            if (direction.x == -1)
-            {
-                direction = new Vector2(1, 0);
-                sr.flipX = false;
+            ChangeDirection();
+        }
 
-            }
-            else if (direction.x == 1)
-            {
-                direction = new Vector2(-1, 0);
-                sr.flipX = true;
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
+            BulletHit();
 
+            timesHit--;
+
+            if (timesHit <= 0)
+            {
+
+                Instantiate(bloodExplosion_PS, transform.position, Quaternion.identity);
+
+                Destroy(this.gameObject);
+                timesHit = 3;
             }
         }
 
 
+
+
+    }
+
+    private void ChangeDirection()
+    {
+        if (direction.x == -1)
+        {
+            direction = new Vector2(1, 0);
+            sr.flipX = false;
+        }
+        else if (direction.x == 1)
+        {
+            direction = new Vector2(-1, 0);
+            sr.flipX = true;
+        }
+    }
+
+    private void BulletHit()
+    {
+        anim.SetBool("isHit", true);
+    }
+
+    public void ResetHit()
+    {
+        anim.SetBool("isHit", false);
     }
 }

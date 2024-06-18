@@ -1,6 +1,4 @@
-using System.Collections;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -10,60 +8,112 @@ public class PlayerBehaviour : MonoBehaviour
     private Rigidbody2D rb;
 
     private SpriteRenderer sr;
-    private Material originalMaterial;
-    public Material whiteFlashMaterial;
     public float flashDuration = 0.1f;
     public int flashCount = 3;
 
-
     private bool isGrounded;
     private bool isFlipped;
+    private bool isMoving;
 
     public Vector2 movement;
-    Animator playerAnimator;
+    private Animator playerAnimator;
     [SerializeField] private AnimationClip playerIdleClip;
-
 
     public static PlayerBehaviour Instance;
     [SerializeField] private float intensity = 10f;
 
-    BoxCollider2D boxCollider;
+    private BoxCollider2D boxCollider;
 
-    bool isFlashing;
+    private bool isFlashing;
+    public int score;
 
-    
+    public Transform weaponTransform;
+    public Transform weaponRotateOrigin;
+    public Transform gunNozzle;
+
+    public Transform tempTransform;
+
+    public GameObject nozzleFlash;
+    public GameObject bullet;
+    public GameObject handGunPU;
+    public GameObject machineGunPU;
+    public GameObject speedPU;
+
+    public Camera mainCamera;
+
+    public SpriteRenderer handGunSpriteRenderer;
+
+    private bool hasGunPowerUp;
+
+    private float angle;
+    private PowerupBox powerupBox;
 
     private void Awake()
     {
-
+        tempTransform = weaponTransform;
         Instance = this;
         isFlipped = false;
         rb = GetComponent<Rigidbody2D>();
-        playerAnimator = GetComponentInChildren<Animator>();  
+        playerAnimator = GetComponentInChildren<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
     }
 
     // Start is called before the first frame update
     private void Start()
     {
-        isFlashing = false; 
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+        }
+
+        score = 0;
+        isFlashing = false;
+        isMoving = false;
         sr = GetComponentInChildren<SpriteRenderer>();
+        hasGunPowerUp = false;
     }
 
     // Update is called once per frame
     private void Update()
     {
-        
+        if (Input.GetMouseButtonDown(0) && hasGunPowerUp)
+        {
+            SpawnBullet();
+            //fire a projectile from the gun nozzle
+        }
 
         FlipPlayerSprite();
         PlayerAnimations();
 
         if (Input.GetKey(KeyCode.Space) && isGrounded == true)
         {
-
             PlayerJump();
             isGrounded = false;
         }
+    }
+
+    private void AimWeapon()
+    {
+        // Get the mouse position in world space
+        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition.z = 0; // Set z to 0 since we're in 2D
+
+        // Calculate the direction from the player to the mouse position
+        Vector3 direction = mousePosition - transform.position;
+        Debug.DrawLine(transform.position, mousePosition, Color.red);
+
+        // Calculate the angle in degrees
+        angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // Rotate the weapon to face the mouse pointer
+        weaponRotateOrigin.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+    }
+
+    private void SpawnBullet()
+    {
+        Instantiate(bullet, gunNozzle.position, Quaternion.identity);
+
+        Instantiate(nozzleFlash, gunNozzle.position, Quaternion.identity);
     }
 
     public void TurnOffBoxCollider2D()
@@ -78,18 +128,18 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
+        AimWeapon();
         PlayerMovement();
     }
 
-
     public void PlayerFlashing()
     {
-        playerAnimator.Play("playerFlashingV2");
+        playerAnimator.Play("playerFlashing");
     }
 
     public void StopPlayerFlashing()
     {
-        isFlashing=false;
+        isFlashing = false;
     }
 
     private void PlayerMovement()
@@ -101,18 +151,20 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     private void PlayerJump()
-    {  
+    {
         rb.AddForce(Vector2.up * jumpMultiplier, ForceMode2D.Impulse);
     }
 
-
     public void PlayerAnimations()
     {
-        if(movement.x != 0)
+        if (movement.x != 0)
         {
+            isMoving = true;
             playerAnimator.SetBool("isMoving", true);
-        } else
+        }
+        else
         {
+            isMoving = false;
             playerAnimator.SetBool("isMoving", false);
         }
     }
@@ -131,24 +183,26 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-
     public void TurnOffLayerCollision()
     {
         Physics2D.IgnoreLayerCollision(6, 7, true);
     }
 
-    public void TurnOnnLayerCollision()
+    public void TurnOnLayerCollision()
     {
         Physics2D.IgnoreLayerCollision(6, 7, false);
     }
 
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        powerupBox = collision.gameObject.GetComponent<PowerupBox>();
+        if (powerupBox != null)
+        {
+            Debug.Log(powerupBox);
+        }
+
         if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Platform") || collision.gameObject.CompareTag("Obstacle"))
         {
-            Debug.Log("touching ground");
             isGrounded = true;
         }
 
@@ -156,13 +210,49 @@ public class PlayerBehaviour : MonoBehaviour
         {
             //get bumped
             rb.AddForce(Vector2.up * intensity, ForceMode2D.Impulse);
-            isFlashing = true;  
-            
-            //flash white a couple of times
-            PlayerFlashing();
-            //TakeDamage();   
+            isFlashing = true;
 
+            //flash transparant a couple of times
+            PlayerFlashing();
+            TakeDamage();
         }
-        
+
+        if (collision.gameObject.CompareTag("handGunPU") || collision.gameObject.CompareTag("machineGunPU"))
+        {
+            AttachWeaponV2();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+    }
+
+    private void TakeDamage()
+    {
+        Debug.Log("Player took damage!");  //TODO: add damage code
+    }
+
+    private void AttachWeaponV2()
+    {
+        if (!hasGunPowerUp)
+        {
+            if (powerupBox.CompareTag("handGunPU"))
+            {
+                GameObject playerGun = Instantiate(handGunPU, weaponTransform.position, Quaternion.Euler(new Vector3(0, 0, angle)));
+                playerGun.transform.SetParent(weaponRotateOrigin, true);
+                gunNozzle = playerGun.GetComponentInChildren<Transform>().Find("gunNozzle");
+                hasGunPowerUp = true;
+            }
+
+            if (powerupBox.CompareTag("machineGunPU"))
+            {
+                GameObject playerGun = Instantiate(machineGunPU, weaponTransform.position, Quaternion.Euler(new Vector3(0, 0, angle)));
+                playerGun.transform.SetParent(weaponRotateOrigin, true);
+                gunNozzle = playerGun.GetComponentInChildren<Transform>().Find("gunNozzle");
+                hasGunPowerUp = true;
+            }
+
+            return;
+        }
     }
 }
