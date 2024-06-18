@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class bulletBehaviour : MonoBehaviour
 {
-    [SerializeField] private float speed = 10f;
+    [SerializeField] private float speed = 30f;
     private Camera mainCamera;
     private Vector3 bulletDirection;
     [SerializeField] private float timeTillDestroy = 1f;
@@ -23,7 +23,7 @@ public class bulletBehaviour : MonoBehaviour
     {
         Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0; // Set z to 0 since we're in 2D
-        bulletDirection = mousePosition - PlayerBehaviour.Instance.gunNozzle.transform.position;
+        bulletDirection = (mousePosition - PlayerBehaviour.Instance.gunNozzle.transform.position).normalized;
     }
 
     // Update is called once per frame

@@ -99,7 +99,9 @@ public class PlayerBehaviour : MonoBehaviour
         mousePosition.z = 0; // Set z to 0 since we're in 2D
 
         // Calculate the direction from the player to the mouse position
-        Vector3 direction = mousePosition - transform.position;
+        Vector3 direction = (mousePosition - transform.position).normalized;
+        Debug.Log(direction.magnitude);
+
         Debug.DrawLine(transform.position, mousePosition, Color.red);
 
         // Calculate the angle in degrees

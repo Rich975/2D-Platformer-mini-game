@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e20be7a8ac2c8c4d933139c957472ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 15
+  speed: 60
   timeTillDestroy: 1
   bloodSpatters_PS: {fileID: 1554288152233348463, guid: 4fd92b51034a57a40b069a3b1422fea1, type: 3}
 --- !u!50 &6662181332361974

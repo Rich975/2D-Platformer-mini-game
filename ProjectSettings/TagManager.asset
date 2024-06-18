@@ -51,9 +51,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Effects
-    uniqueID: 3004087859
-    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Enemies
+    uniqueID: 3022041683
+    locked: 0
+  - name: Clouds
+    uniqueID: 1009561001
+    locked: 0
+  - name: Environment
+    uniqueID: 441041563
+    locked: 0
+  - name: Effects
+    uniqueID: 3004087859
     locked: 0
