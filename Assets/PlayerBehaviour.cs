@@ -50,6 +50,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private float playerHealth = 100f;
 
+
     private void Awake()
     {
         tempTransform = weaponTransform;
@@ -89,8 +90,14 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space) && isGrounded == true)
         {
+
             PlayerJump();
             isGrounded = false;
+        }
+
+        if (isGrounded)
+        {
+            playerAnimator.SetBool("isJumping", false);
         }
     }
 
@@ -156,6 +163,8 @@ public class PlayerBehaviour : MonoBehaviour
     private void PlayerJump()
     {
         rb.AddForce(Vector2.up * jumpMultiplier, ForceMode2D.Impulse);
+        playerAnimator.SetBool("isJumping", true);
+
     }
 
     public void PlayerAnimations()
@@ -170,6 +179,7 @@ public class PlayerBehaviour : MonoBehaviour
             isMoving = false;
             playerAnimator.SetBool("isMoving", false);
         }
+
     }
 
     private void FlipPlayerSprite()
