@@ -52,7 +52,7 @@ public class PowerupBox : MonoBehaviour
             if (bulletHitCount <= 0)
             {
                 PowerUpSpawnAfterBulletHit(collision);
-                Instantiate(crateExplosion, transform.position, Quaternion.identity);   
+                Instantiate(crateExplosion, transform.position, Quaternion.identity);
                 Destroy(this.gameObject);
             }
         }
@@ -63,6 +63,7 @@ public class PowerupBox : MonoBehaviour
         if (collision.gameObject.CompareTag("Player") && this.type == PowerupType.HandGun)
         {
             go = Instantiate(powerUps[0], powerUpSpawnPoint.position, Quaternion.identity);
+
             hasSpawned = true;
             Destroy(this.gameObject, 1f);
         }
@@ -88,22 +89,27 @@ public class PowerupBox : MonoBehaviour
         if (this.type == PowerupType.HandGun)
         {
             go = Instantiate(powerUps[0], powerUpSpawnPoint.position, Quaternion.identity);
+            Instantiate(crateExplosion, transform.position, Quaternion.identity);
             hasSpawned = true;
-            Destroy(this.gameObject, 1f);
+            Destroy(this.gameObject);
         }
 
         if (this.type == PowerupType.MachineGun)
         {
             go = Instantiate(powerUps[0], powerUpSpawnPoint.position, Quaternion.identity);
+            Instantiate(crateExplosion, transform.position, Quaternion.identity);
+
             hasSpawned = true;
-            Destroy(this.gameObject, 1f);
+            Destroy(this.gameObject);
         }
 
         if (this.type == PowerupType.Speed)
         {
             go = Instantiate(powerUps[0], powerUpSpawnPoint.position, Quaternion.identity);
+            Instantiate(crateExplosion, transform.position, Quaternion.identity);
+
             hasSpawned = true;
-            Destroy(this.gameObject, 1f);
+            Destroy(this.gameObject);
         }
     }
 

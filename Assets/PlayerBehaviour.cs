@@ -48,6 +48,8 @@ public class PlayerBehaviour : MonoBehaviour
     private float angle;
     private PowerupBox powerupBox;
 
+    private float playerHealth = 100f;
+
     private void Awake()
     {
         tempTransform = weaponTransform;
@@ -100,7 +102,6 @@ public class PlayerBehaviour : MonoBehaviour
 
         // Calculate the direction from the player to the mouse position
         Vector3 direction = (mousePosition - transform.position).normalized;
-        Debug.Log(direction.magnitude);
 
         Debug.DrawLine(transform.position, mousePosition, Color.red);
 
@@ -223,10 +224,6 @@ public class PlayerBehaviour : MonoBehaviour
         {
             AttachWeaponV2();
         }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
     }
 
     private void TakeDamage()

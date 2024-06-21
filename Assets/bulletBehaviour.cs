@@ -1,4 +1,3 @@
-using UnityEditor.TerrainTools;
 using UnityEngine;
 
 public class bulletBehaviour : MonoBehaviour
@@ -9,8 +8,6 @@ public class bulletBehaviour : MonoBehaviour
     [SerializeField] private float timeTillDestroy = 1f;
     private Rigidbody2D rb;
     [SerializeField] private ParticleSystem bloodSpatters_PS;
-
-
 
     private void Awake()
     {
@@ -40,18 +37,11 @@ public class bulletBehaviour : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-
         if (collision.gameObject.CompareTag("Enemy"))
         {
             ContactPoint2D contactPoint = collision.GetContact(0);
-            Instantiate(bloodSpatters_PS, contactPoint.otherCollider.transform.position , Quaternion.identity);
+            Instantiate(bloodSpatters_PS, contactPoint.otherCollider.transform.position, Quaternion.identity);
             Destroy(this.gameObject);
         }
-
     }
-
-   
-
-
-
 }

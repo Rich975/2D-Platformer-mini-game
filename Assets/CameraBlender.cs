@@ -1,5 +1,4 @@
 using Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraBlender : MonoBehaviour
@@ -13,12 +12,8 @@ public class CameraBlender : MonoBehaviour
 
     private CinemachineBrain cinemachineBrain;
 
-
-
-
     private void Start()
     {
-     
         cinemachineBrain = Camera.main.GetComponent<CinemachineBrain>();
 
         if (cinemachineBrain == null)

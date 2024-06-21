@@ -1,4 +1,3 @@
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
@@ -13,8 +12,6 @@ public class EnemyBehaviour : MonoBehaviour
 
     [SerializeField] private int timesHit = 3;
     [SerializeField] private ParticleSystem bloodExplosion_PS;
-
-
 
     // Start is called before the first frame update
     private void Start()
@@ -38,7 +35,6 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-
         if (!collision.gameObject.CompareTag("Ground"))
         {
             ChangeDirection();
@@ -52,17 +48,12 @@ public class EnemyBehaviour : MonoBehaviour
 
             if (timesHit <= 0)
             {
-
                 Instantiate(bloodExplosion_PS, transform.position, Quaternion.identity);
 
                 Destroy(this.gameObject);
                 timesHit = 3;
             }
         }
-
-
-
-
     }
 
     private void ChangeDirection()

@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -7,10 +8,17 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI levelCompleteText;
     public GameObject levelCompleteGO;
 
+    public GameObject menuButtons;
+    public GameObject gameInfo;
+
+    public Button newGameButton;
+
     public int score;
 
     public static UIManager Instance;
     [SerializeField] private Animator anim;
+
+    private bool isPaused = false;
 
     // Start is called before the first frame update
     private void Start()
@@ -23,6 +31,52 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            isPaused = !isPaused;
+            if (isPaused)
+            {
+                PauseGame();
+            }
+            else
+            {
+                ContinueGame();
+            }
+        }
+    }
+
+    public void ShowMenuButtons()
+    {
+        menuButtons.SetActive(true);
+    }
+
+    public void HideMenuButtons()
+    {
+        menuButtons.SetActive(false);
+    }
+
+    private void PauseGame()
+    {
+        ShowMenuButtons();
+        Time.timeScale = 0;
+    }
+
+    public void ContinueGame()
+    {
+        HideMenuButtons();
+        HideGameInfo();
+        Time.timeScale = 1;
+    }
+
+    public void ShowGameInfo()
+    {
+        gameInfo.SetActive(true);
+        HideMenuButtons();
+    }
+
+    public void HideGameInfo()
+    {
+        gameInfo.SetActive(false);
     }
 
     public void AddScore(int score)
