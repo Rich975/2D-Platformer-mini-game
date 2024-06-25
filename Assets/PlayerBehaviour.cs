@@ -3,7 +3,14 @@ using UnityEngine;
 public class PlayerBehaviour : MonoBehaviour
 {
     private float hInput, vInput;
-    [SerializeField] private float speed = 10f;
+
+    public float normalSpeed = 10f;
+    public float powerupSpeed = 20f;
+    public float speedPowerupDuration = 5f;
+
+    private float speedPowerupTimer = 0f;
+    private bool hasSpeedPowerUp = false;
+
     [SerializeField] private float jumpMultiplier = 5f;
     private Rigidbody2D rb;
 
@@ -50,7 +57,6 @@ public class PlayerBehaviour : MonoBehaviour
 
     private float playerHealth = 100f;
 
-
     private void Awake()
     {
         tempTransform = weaponTransform;
@@ -74,6 +80,7 @@ public class PlayerBehaviour : MonoBehaviour
         isMoving = false;
         sr = GetComponentInChildren<SpriteRenderer>();
         hasGunPowerUp = false;
+        hasSpeedPowerUp = false;    
     }
 
     // Update is called once per frame
@@ -85,12 +92,9 @@ public class PlayerBehaviour : MonoBehaviour
             //fire a projectile from the gun nozzle
         }
 
-        FlipPlayerSprite();
-        PlayerAnimations();
 
         if (Input.GetKey(KeyCode.Space) && isGrounded == true)
         {
-
             PlayerJump();
             isGrounded = false;
         }
@@ -99,6 +103,12 @@ public class PlayerBehaviour : MonoBehaviour
         {
             playerAnimator.SetBool("isJumping", false);
         }
+
+        FlipPlayerSprite();
+        PlayerAnimations();
+        IncreasePlayerSpeed();
+      
+        
     }
 
     private void AimWeapon()
@@ -156,14 +166,13 @@ public class PlayerBehaviour : MonoBehaviour
     {
         hInput = Input.GetAxisRaw("Horizontal");
         vInput = Input.GetAxisRaw("Vertical");
-        movement = new Vector2(hInput, 0) * speed * Time.deltaTime;
+        movement = new Vector2(hInput, 0) * normalSpeed * Time.deltaTime;
         transform.Translate(movement);
     }
 
     private void PlayerJump()
     {
         rb.AddForce(Vector2.up * jumpMultiplier, ForceMode2D.Impulse);
-
     }
 
     public void PlayerAnimations()
@@ -178,7 +187,6 @@ public class PlayerBehaviour : MonoBehaviour
             isMoving = false;
             playerAnimator.SetBool("isMoving", false);
         }
-
     }
 
     private void FlipPlayerSprite()
@@ -204,6 +212,43 @@ public class PlayerBehaviour : MonoBehaviour
     {
         Physics2D.IgnoreLayerCollision(6, 7, false);
     }
+
+    private void TakeDamage()
+    {
+        Debug.Log("Player took damage!");  //TODO: add damage code
+    }
+
+
+    public void ActivateSpeedPowerUp()
+    {
+        hasSpeedPowerUp = true;
+        speedPowerupTimer = speedPowerupDuration;
+    }
+
+
+    public void IncreasePlayerSpeed()
+    {
+
+        if (hasSpeedPowerUp)
+        {
+            if (speedPowerupTimer > 0)
+            {
+                speedPowerupTimer -= Time.deltaTime;
+                Debug.Log("Power-up active. Time remaining: " + speedPowerupTimer);
+                normalSpeed = powerupSpeed;
+            }
+            else
+            {
+                hasSpeedPowerUp = false;
+                normalSpeed = 10f;
+                Debug.Log("Power-up expired. Speed reset to normal.");
+            }
+        }
+
+
+
+    }
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -235,10 +280,17 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    private void TakeDamage()
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Player took damage!");  //TODO: add damage code
+        if (other.gameObject.CompareTag("speedPU"))
+        {
+            ActivateSpeedPowerUp();
+            Destroy(other.gameObject);
+        }
+
     }
+
 
     private void AttachWeaponV2()
     {

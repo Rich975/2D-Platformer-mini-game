@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class powerUpSpeed : MonoBehaviour
 {
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,4 +16,7 @@ public class powerUpSpeed : MonoBehaviour
     {
         
     }
+
+
+
 }

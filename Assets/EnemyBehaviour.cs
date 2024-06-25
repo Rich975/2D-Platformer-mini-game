@@ -13,12 +13,9 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private int timesHit = 3;
     [SerializeField] private ParticleSystem bloodExplosion_PS;
 
-    Vector3 myLocation;
-
     // Start is called before the first frame update
     private void Start()
     {
-        myLocation = this.transform.position;
         anim = GetComponent<Animator>();
         sr = GetComponentInChildren<SpriteRenderer>();
         direction = new Vector2(1, 0);
