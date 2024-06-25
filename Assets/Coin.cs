@@ -22,6 +22,20 @@ public class Coin : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        //if (collision.gameObject.CompareTag("Player"))
+        //{
+        //    if (!isCollected)
+        //    {
+        //        UIManager.Instance.AddScore(1);
+        //        isCollected = true;
+        //        animator.SetBool("isCollected", true);
+        //        Destroy(gameObject, 1);
+        //    }
+        //}
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
         if (collision.gameObject.CompareTag("Player"))
         {
             if (!isCollected)
@@ -32,5 +46,7 @@ public class Coin : MonoBehaviour
                 Destroy(gameObject, 1);
             }
         }
+
     }
+
 }

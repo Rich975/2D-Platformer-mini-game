@@ -13,9 +13,12 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private int timesHit = 3;
     [SerializeField] private ParticleSystem bloodExplosion_PS;
 
+    Vector3 myLocation;
+
     // Start is called before the first frame update
     private void Start()
     {
+        myLocation = this.transform.position;
         anim = GetComponent<Animator>();
         sr = GetComponentInChildren<SpriteRenderer>();
         direction = new Vector2(1, 0);
@@ -49,6 +52,7 @@ public class EnemyBehaviour : MonoBehaviour
             if (timesHit <= 0)
             {
                 Instantiate(bloodExplosion_PS, transform.position, Quaternion.identity);
+                CoinSpawner.Instance.SpawnCoins(CoinSpawner.Instance.RandomNumberOfCoins(), transform.position);
 
                 Destroy(this.gameObject);
                 timesHit = 3;

@@ -163,7 +163,6 @@ public class PlayerBehaviour : MonoBehaviour
     private void PlayerJump()
     {
         rb.AddForce(Vector2.up * jumpMultiplier, ForceMode2D.Impulse);
-        playerAnimator.SetBool("isJumping", true);
 
     }
 
